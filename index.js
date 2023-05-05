@@ -33,3 +33,15 @@ app.get('/game/:id', (req, res) => {
     }
     
 });
+
+app.post('/game', (req, res) => {
+    const { id, title, year } = req.body;
+
+    db.games.push({ //push adiciona dados no array
+        id,
+        title,
+        year
+    });
+
+    res.sendStatus(200);
+});

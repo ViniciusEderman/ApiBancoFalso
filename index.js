@@ -63,3 +63,23 @@ app.delete('/game/:id', (req, res) => {
     }
 });
 
+app.put('/game/:id', (req, res) => {
+    if(isNaN(req.params.id)) {
+        res.send('Wrong Id')
+        res.sendStatus(400);
+    } else {
+        const id = parseInt(req.params.id);
+        const game = db.games.find(game => game.id == id)
+
+        if(game == undefined) {
+            res.sendStatus(404);
+        } else {
+            const { title, year } = req.body;
+            if(title != undefined && year != undefined) {
+                game.title = title;
+                game.year = year;
+            }
+            res.sendStatus(200);
+        }
+    }
+});

@@ -45,3 +45,21 @@ app.post('/game', (req, res) => {
 
     res.sendStatus(200);
 });
+
+app.delete('/game/:id', (req, res) => {
+     if(isNaN(req.params.id)) {
+        res.send('Wrong Id')
+        res.sendStatus(400);
+    }else {
+        const id = parseInt(req.params.id);
+        const game = db.games.findIndex(g => g.id == id);
+
+        if(game == -1) { // elemento do index que nao existe
+            res,sendStatus(404);
+        }else {
+            db.games.splice(game, 1);
+            res.sendStatus(200);
+        }
+    }
+});
+

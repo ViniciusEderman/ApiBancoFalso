@@ -12,7 +12,12 @@
     <input type="text" name="title" id="title" placeholder="Título">
     <input type="text" name="year" id="year" placeholder="Ano de Lançamento">
     <button type="button" onclick="newGame()">Enviar</button>
-    <br><br><button id="refresh-btn">Atualizar Página</button>
+    <h4>Editar Game:</h4>
+    <input type="text" name="idEdit" id="idEdit" placeholder="Id" readonly>
+    <input type="text" name="titleEdit" id="titleEdit" placeholder="Título">
+    <input type="text" name="yearEdit" id="yearEdit" placeholder="Ano de Lançamento">
+    <button type="button" onclick="updateGame()">Editar</button><hr>
+    <br><button id="refresh-btn">Atualizar Página</button>
 
 </head>
 
@@ -36,6 +41,13 @@
                 gameList.appendChild(deleteBtn);
                 deleteBtn.addEventListener("click", function(){
                     deleteGame(gameList);
+                });
+
+                const editBtn = document.createElement("button");
+                editBtn.innerHTML = "Editar"
+                gameList.appendChild(editBtn);
+                editBtn.addEventListener("click", function(){
+                    listGame(gameList);
                 });
 
                 list.appendChild(gameList);
@@ -74,6 +86,42 @@
                 console.log(err);
             })
         }
+
+        function listGame(ListItem) {
+            const id = ListItem.getAttribute("data-id");
+            const title = ListItem.getAttribute("data-title");
+            const year = ListItem.getAttribute("data-year");
+
+            const idField = document.getElementById("idEdit");
+            const titleField = document.getElementById("titleEdit");
+            const yearField = document.getElementById("yearEdit");
+            
+            idField.value = id;
+            titleField.value= title;
+            yearField.value = year;            
+        }
+
+        function updateGame() {
+            const title = document.getElementById("title");
+            const year = document.getElementById("year");
+            const idInput = document.getElementById("idEdit");
+            const id = idInput.value;
+
+            const game = {
+                title: title.value,
+                year: year.value,
+            }
+            axios.put('http://localhost:8080/game/'+id, game).then(response => {
+
+                if(response.status == 200) {
+                    console.log("Game Editado");
+                }
+                console.log(response);
+            }).catch(err => {
+                console.log(err);
+            });
+        }
+
         document.getElementById("refresh-btn").addEventListener("click", function(){
             location.reload();
         });

@@ -7,9 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consumindo Api De Games</title><hr>
     <h4>Lista de Games:</h4>
-    <ul id="games">
+    <ul id="games"></ul><hr>
+    <h4>Cadastrar Game</h4>
+    <input type="text" name="title" id="title" placeholder="Título">
+    <input type="text" name="year" id="year" placeholder="Ano de Lançamento">
+    <button type="button" onclick="newGame()">Enviar</button>
+    <br><br><button id="refresh-btn">Atualizar Página</button>
 
-    </ul>
 </head>
 
 <body>
@@ -19,9 +23,21 @@
             const games = response.data;
             const list = document.getElementById("games");
 
-            for (let i = 0; i < games.length; i++) {
+            for (let i = 0; i < games.length; i++) {  
                 const gameList = document.createElement("li"); //criando um elemento de html
-                gameList.innerHTML = `Id: ${games[i].id}, ${games[i].title}, ${games[i].year}`
+                gameList.innerHTML = `${games[i].title}, ${games[i].year}`
+                
+                gameList.setAttribute("data-id", games[i].id);
+                gameList.setAttribute("data-title", games[i].title);
+                gameList.setAttribute("data-year", games[i].year);
+                
+                const deleteBtn = document.createElement("button");
+                deleteBtn.innerHTML = "Deletar";
+                gameList.appendChild(deleteBtn);
+                deleteBtn.addEventListener("click", function(){
+                    deleteGame(gameList);
+                });
+
                 list.appendChild(gameList);
                 console.log(games[i]);
             }   
@@ -29,6 +45,37 @@
             // console.log(games);
         }).catch(err => {
             console.log(err);
+        });
+
+        function newGame() {
+            const title = document.getElementById("title");
+            const year = document.getElementById("year");
+
+            const game = {
+                title: title.value,
+                year: year.value,
+            }
+            axios.post('http://localhost:8080/game', game).then(response => {
+
+                if(response.status == 200) {
+                    console.log("Game Cadastrado");
+                }
+                console.log(response);
+            }).catch(err => {
+                console.log(err);
+            });
+        }
+
+        function deleteGame(ListItem) {
+            const id = ListItem.getAttribute("data-id");
+            axios.delete('http://localhost:8080/game/'+id).then(response => {
+                alert("Jogo Deletado Com Sucesso");
+            }).catch(err => {
+                console.log(err);
+            })
+        }
+        document.getElementById("refresh-btn").addEventListener("click", function(){
+            location.reload();
         });
     </script>
 </body>

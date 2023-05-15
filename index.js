@@ -85,3 +85,29 @@ app.put('/game/:id', (req, res) => {
         }
     }
 });
+
+app.post('/auth', (req, res) => {
+
+    const {email, password} = req.body;
+
+    if(email != undefined) {
+        const user = db.users.find(user => {user.email == email});
+
+        if(user == undefined) {
+            if(password == password) {
+                res.status = 200;
+                res.json({token: "Wrong Token"});
+            } else {
+                res.status = 401;
+                res.json({token: "Wrong Password"});
+            }
+        } else{
+            res.status = 404;
+            res.json({err: "usuario não encontrado"});
+        }
+    } else{
+        res.status = 400;
+        res.json({err: "Email invalido ou não constado no sistema"});
+    }
+
+});

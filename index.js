@@ -3,7 +3,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const db = require('./db/db');
 const cors = require('cors');
+const webToken = require('jsonwebtoken');
 
+const jwtToken = 'P4ssw0rd@r5t5';
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -91,22 +93,32 @@ app.post('/auth', (req, res) => {
     const {email, password} = req.body;
 
     if(email != undefined) {
-        const user = db.users.find(user => {user.email == email});
+        const user = db.users.find(user => user.email == email);
 
-        if(user == undefined) {
-            if(password == password) {
-                res.status = 200;
+        if(user != undefined) {
+            if(user.password == password) {
+                webToken.sign({id: user.id, email: user.email},jwtToken,{expiresIn:'48h'}, (err, token) => { //payload
+                    if(err) {
+                        res.status(400);
+                        res.json("falha na autenticação");
+                    } else{
+                        res.status(200);
+                        res.json({token: token});
+                    }
+                }); 
+
+                res.status(200);
                 res.json({token: "Wrong Token"});
             } else {
-                res.status = 401;
+                res.status(401);
                 res.json({token: "Wrong Password"});
             }
         } else{
-            res.status = 404;
+            res.status(404);
             res.json({err: "usuario não encontrado"});
         }
     } else{
-        res.status = 400;
+        res.status(400);
         res.json({err: "Email invalido ou não constado no sistema"});
     }
 

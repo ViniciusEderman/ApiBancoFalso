@@ -5,21 +5,46 @@ const db = require('./db/db');
 const cors = require('cors');
 const webToken = require('jsonwebtoken');
 
-const jwtToken = 'P4ssw0rd@r5t5';
+const jwtPassword = 'P4ssw0rd@r5t5';
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
+function auth(req, res, next) { //middleware
+    const authToken = req.headers['authorization'];
+
+    if(authToken != undefined) {
+        const bearer = authToken.split(' ');
+        const token = bearer[1];
+
+        webToken.verify(token, jwtPassword, (err, response) => {
+            if(err) {
+                res.status(401);
+                res.json({err: 'Token Invalido'});
+            } else {
+                req.token = token;
+                req.user = {id: response.id, email: response.email};
+                next(); //passa a conexao do middleware para a rota 
+                console.log(response);
+            }
+        })
+    }else {
+        res.status(401);
+        res.json({err: 'Token Invalido'});
+    }
+    //console.log(authToken);
+}
 
 app.listen(8080, () => {
     console.log('Server runing');
 });
 
-app.get('/games', (req, res) => {
+app.get('/games',auth,(req, res) => {
     res.statusCode = 200;
-    res.json(db.games);
+    res.json({user: req.user, games: db.games});
 });
 
-app.get('/game/:id', (req, res) => {
+app.get('/game/:id',auth,(req, res) => {
 
     if(isNaN(req.params.id)) {
         res.send('Wrong Id')
@@ -38,7 +63,7 @@ app.get('/game/:id', (req, res) => {
     
 });
 
-app.post('/game', (req, res) => {
+app.post('/game',auth,(req, res) => {
     const { id, title, year } = req.body;
 
     db.games.push({ //push adiciona dados no array
@@ -50,7 +75,7 @@ app.post('/game', (req, res) => {
     res.sendStatus(200);
 });
 
-app.delete('/game/:id', (req, res) => {
+app.delete('/game/:id',auth,(req, res) => {
      if(isNaN(req.params.id)) {
         res.send('Wrong Id')
         res.sendStatus(400);
@@ -58,7 +83,7 @@ app.delete('/game/:id', (req, res) => {
         const id = parseInt(req.params.id);
         const game = db.games.findIndex(g => g.id == id);
 
-        if(game == -1) { // elemento do index que nao existe
+        if(game == -1) { //elemento do index que nao existe
             res,sendStatus(404);
         }else {
             db.games.splice(game, 1);
@@ -67,7 +92,7 @@ app.delete('/game/:id', (req, res) => {
     }
 });
 
-app.put('/game/:id', (req, res) => {
+app.put('/game/:id',auth,(req, res) => {
     if(isNaN(req.params.id)) {
         res.send('Wrong Id')
         res.sendStatus(400);
@@ -88,8 +113,7 @@ app.put('/game/:id', (req, res) => {
     }
 });
 
-app.post('/auth', (req, res) => {
-
+app.post('/auth',auth,(req, res) => {
     const {email, password} = req.body;
 
     if(email != undefined) {
@@ -97,7 +121,7 @@ app.post('/auth', (req, res) => {
 
         if(user != undefined) {
             if(user.password == password) {
-                webToken.sign({id: user.id, email: user.email},jwtToken,{expiresIn:'48h'}, (err, token) => { //payload
+                webToken.sign({id: user.id, email: user.email},jwtPassword,{expiresIn:'48h'}, (err, token) => { //payload
                     if(err) {
                         res.status(400);
                         res.json("falha na autenticação");
@@ -106,9 +130,6 @@ app.post('/auth', (req, res) => {
                         res.json({token: token});
                     }
                 }); 
-
-                res.status(200);
-                res.json({token: "Wrong Token"});
             } else {
                 res.status(401);
                 res.json({token: "Wrong Password"});
@@ -121,5 +142,4 @@ app.post('/auth', (req, res) => {
         res.status(400);
         res.json({err: "Email invalido ou não constado no sistema"});
     }
-
 });

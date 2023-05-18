@@ -24,7 +24,13 @@
 <body>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <script>
-        axios.get('http://localhost:8080/games').then(response => {
+
+        const axiosConfig = {
+            headers: {
+                Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ2aWN0b3IubHVpc0BnbWFpbC5jb20iLCJpYXQiOjE2ODQ0MjYwODcsImV4cCI6MTY4NDU5ODg4N30.lGBdXAWmxG_O_OAuroBr-eYGfInCxtPL7YEAGHqdd5I",
+            }
+        }
+        axios.get('http://localhost:8080/games',axiosConfig).then(response => {
             const games = response.data;
             const list = document.getElementById("games");
 
@@ -54,7 +60,7 @@
                 console.log(games[i]);
             }   
 
-            // console.log(games);
+            console.log(games);
         }).catch(err => {
             console.log(err);
         });

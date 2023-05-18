@@ -41,7 +41,7 @@ app.listen(8080, () => {
 
 app.get('/games',auth,(req, res) => {
     res.statusCode = 200;
-    res.json({user: req.user, games: db.games});
+    res.json({games: db.games});
 });
 
 app.get('/game/:id',auth,(req, res) => {
@@ -113,7 +113,7 @@ app.put('/game/:id',auth,(req, res) => {
     }
 });
 
-app.post('/auth',auth,(req, res) => {
+app.post('/auth',(req, res) => {
     const {email, password} = req.body;
 
     if(email != undefined) {

@@ -57,10 +57,8 @@
                 });
 
                 list.appendChild(gameList);
-                console.log(games[i]);
+                //console.log(games[i]);
             }   
-
-            console.log(games);
         }).catch(err => {
             console.log(err);
         });
@@ -73,7 +71,7 @@
                 title: title.value,
                 year: year.value,
             }
-            axios.post('http://localhost:8080/game', game).then(response => {
+            axios.post('http://localhost:8080/game', game, axiosConfig).then(response => {
 
                 if(response.status == 200) {
                     console.log("Game Cadastrado");
@@ -86,7 +84,7 @@
 
         function deleteGame(ListItem) {
             const id = ListItem.getAttribute("data-id");
-            axios.delete('http://localhost:8080/game/'+id).then(response => {
+            axios.delete('http://localhost:8080/game/'+id, axiosConfig).then(response => {
                 alert("Jogo Deletado Com Sucesso");
             }).catch(err => {
                 console.log(err);
@@ -117,7 +115,7 @@
                 title: title.value,
                 year: year.value,
             }
-            axios.put('http://localhost:8080/game/'+id, game).then(response => {
+            axios.put('http://localhost:8080/game/'+id, game, axiosConfig).then(response => {
 
                 if(response.status == 200) {
                     console.log("Game Editado");

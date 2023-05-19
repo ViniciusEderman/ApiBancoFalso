@@ -41,7 +41,8 @@ app.listen(8080, () => {
 
 app.get('/games',auth,(req, res) => {
     res.statusCode = 200;
-    res.json({games: db.games});
+    const { games } = db;
+    res.json(games);
 });
 
 app.get('/game/:id',auth,(req, res) => {

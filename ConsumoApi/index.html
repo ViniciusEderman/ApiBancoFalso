@@ -6,12 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consumindo Api De Games</title><hr>
-    <h4>Lista de Games:</h4>
+
+    <h4>Login</h4>
+    <input type="text" name="email" id="email" placeholder="teste@gmail.com"><br>
+    <input type="password" name="password" id="password" placeholder="*******">
+    <button onclick="login()">Entrar</button>
+
+    <h4>Lista de Games</h4>
     <ul id="games"></ul><hr>
     <h4>Cadastrar Game</h4>
     <input type="text" name="title" id="title" placeholder="Título">
     <input type="text" name="year" id="year" placeholder="Ano de Lançamento">
     <button type="button" onclick="newGame()">Enviar</button>
+
     <h4>Editar Game:</h4>
     <input type="text" name="idEdit" id="idEdit" placeholder="Id" readonly>
     <input type="text" name="titleEdit" id="titleEdit" placeholder="Título">
@@ -24,10 +31,9 @@
 <body>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <script>
-
         const axiosConfig = {
             headers: {
-                Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ2aWN0b3IubHVpc0BnbWFpbC5jb20iLCJpYXQiOjE2ODQ0MjYwODcsImV4cCI6MTY4NDU5ODg4N30.lGBdXAWmxG_O_OAuroBr-eYGfInCxtPL7YEAGHqdd5I",
+                Authorization: "Bearer " + localStorage.getItem("token")
             }
         }
         axios.get('http://localhost:8080/games',axiosConfig).then(response => {
@@ -71,7 +77,7 @@
                 title: title.value,
                 year: year.value,
             }
-            axios.post('http://localhost:8080/game', game, axiosConfig).then(response => {
+            axios.post('http://localhost:8080/game',game,axiosConfig).then(response => {
 
                 if(response.status == 200) {
                     console.log("Game Cadastrado");
@@ -84,7 +90,7 @@
 
         function deleteGame(ListItem) {
             const id = ListItem.getAttribute("data-id");
-            axios.delete('http://localhost:8080/game/'+id, axiosConfig).then(response => {
+            axios.delete('http://localhost:8080/game/'+id,axiosConfig).then(response => {
                 alert("Jogo Deletado Com Sucesso");
             }).catch(err => {
                 console.log(err);
@@ -115,7 +121,7 @@
                 title: title.value,
                 year: year.value,
             }
-            axios.put('http://localhost:8080/game/'+id, game, axiosConfig).then(response => {
+            axios.put('http://localhost:8080/game/'+id,game,axiosConfig).then(response => {
 
                 if(response.status == 200) {
                     console.log("Game Editado");
@@ -129,6 +135,28 @@
         document.getElementById("refresh-btn").addEventListener("click", function(){
             location.reload();
         });
+
+        function login() { 
+            const emailZone = document.getElementById("email"); // capturando elementos pelo id 
+            const passwordZone = document.getElementById("password");
+            const email = emailZone.value;
+            const password = passwordZone.value;
+
+        axios.post('http://localhost:8080/auth', 
+            {email,
+            password,
+            }).then(res => {
+                const token = res.data.token;
+                //console.log(res.data);
+                localStorage.setItem("token", token);
+                axiosConfig.headers.Authorization = "Bearer " + localStorage.getItem("token");
+                alert("Conta acessada com sucesso \n Token de acesso:\n" + token);
+            }).
+            catch(err => {
+                console.log(err);
+                alert("Acesso Negado, Verifique Suas Credenciais")
+            });
+        }
     </script>
 </body>
 </html>

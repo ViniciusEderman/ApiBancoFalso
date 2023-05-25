@@ -10,14 +10,13 @@
   index.js -> todo o código da api, rotas e lógica por trás do funcionamento
 
 # Tipos De Rotas Utilizadas:
-  > get <
-  > post <
-  > put <
-  > delete <
+  > get >
+  > post >
+  > put >
+  > delete >
 
 # Auth:
-  app.post('/auth') rota que faz a vericação de email, user, password -> retornando (200) e o token caso esteja correto ou (400) para falha na autenticação
-
+  app.post('/auth') rota que faz a vericação de email, user, password -> retornando (200) + o token de acesso <br> e para falha na autenticação é retornado o status (400) 
 # Banco Falso:
   Json utilizado :
   games: [ // jogos "cadastrados no banco"

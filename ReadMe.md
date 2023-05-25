@@ -1,12 +1,12 @@
 # API DE GAMES
-  A API tem como base o estudo dos conceitos do que é uma api(rest), atualmente sem utilização de um banco de dados
+  A api tem como base o estudo dos conceitos do que é uma api(rest), atualmente sem utilização de um banco de dados
 
 # Observação:
   O conceito do banco falso é a utilização de um arquivo Json encontrado no repositório -> db -> db.js
 
 # Arquivos:
-  ConsumoApi -> index.html(html composto de axios para consumir a Api em um front-end)
-  db -> db.js arquivo responsável pelo dados, já que não há utilização de um banco
+  ConsumoApi -> index.html(html composto de axios para consumir a Api em um front-end)<br>
+  db -> db.js arquivo responsável pelo dados, já que não há utilização de um banco<br>
   index.js -> todo o código da api, rotas e lógica por trás do funcionamento
 
 # Tipos De Rotas Utilizadas:

@@ -19,7 +19,7 @@
   app.post('/auth') rota que faz a vericação de email, user, password -> retornando (200) + o token de acesso <br> e para falha na autenticação é retornado o status (400) 
 # Banco Falso:
   Json utilizado: 
-  ```json
+  ```
  {
     games: [
     { 
